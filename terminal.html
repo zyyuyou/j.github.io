@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>駭客模擬器 - 終端機</title>
+    <style>
+        body {
+            background: #0a0a0a; /* 更深的背景色 */
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* 防止滾動條出現在 body */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* 確保至少佔滿整個視窗高度 */
+        }
+
+        #terminal-container {
+            width: 90%; /* 終端機寬度 */
+            max-width: 900px; /* 最大寬度 */
+            height: 85vh; /* 終端機高度 */
+            background: rgba(0, 0, 0, 0.9); /* 終端機背景色 */
+            border: 2px solid #00ff00; /* 外框 */
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.7), inset 0 0 10px rgba(0, 255, 0, 0.3); /* 外發光和內發光 */
+            border-radius: 8px; /* 圓角 */
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            position: relative; /* 為了裝飾元素定位 */
+            overflow: hidden; /* 隱藏容器內部的滾動條 */
+        }
+
+        /* 裝飾線條 */
+        #terminal-container::before,
+        #terminal-container::after {
+            content: '';
+            position: absolute;
+            background: rgba(0, 255, 0, 0.4);
+            filter: blur(2px);
+        }
+
+        #terminal-container::before {
+            top: 10px;
+            left: 10px;
+            width: 30px;
+            height: 2px;
+        }
+
+        #terminal-container::after {
+            bottom: 10px;
+            right: 10px;
+            width: 2px;
+            height: 30px;
+        }
+
+        /* 終端機頂部控制條 (裝飾) */
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed rgba(0, 255, 0, 0.3);
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27c93f; }
+
+        .terminal-title {
+            color: #00ff00;
+            font-size: 0.9em;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+
+        #title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00ffff; /* 標題顏色可以不同 */
+            text-shadow: 0 0 5px #00ffff;
+        }
+
+        .welcome-msg {
+            margin-bottom: 20px;
+            color: #00cc00;
+        }
+
+        #terminal-content {
+            flex-grow: 1; /* 讓內容區域填滿剩餘空間 */
+            overflow-y: auto; /* 讓內容區域內部滾動 */
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: #00ff00 #222; /* Firefox */
+        }
+
+        /* Webkit 瀏覽器的滾動條樣式 */
+        #terminal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #terminal-content::-webkit-scrollbar-track {
+            background: #222;
+            border-radius: 10px;
+        }
+
+        #terminal-content::-webkit-scrollbar-thumb {
+            background: #00ff00;
+            border-radius: 10px;
+            border: 2px solid #222;
+        }
+
+        #terminal-content::-webkit-scrollbar-thumb:hover {
+            background: #00cc00;
+        }
+
+
+        #terminal-output {
+            text-align: left;
+            padding-right: 10px; /* 為滾動條留出空間 */
+            line-height: 1.4; /* 行高 */
+            word-break: break-word; /* 防止長單詞溢出 */
+            display: flex; /* 使用 flexbox 讓內容垂直堆疊 */
+            flex-direction: column;
+        }
+
+        /* 讓每個添加到 output 的文本行都佔據一行 */
+        #terminal-output > div {
+            margin-bottom: 2px; /* 每行之間可選的間距 */
+            /* 關鍵修正：確保內部 div 也能解析換行 */
+            white-space: pre-wrap;
+        }
+
+
+        #input-line {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(0, 255, 0, 0.3);
+        }
+
+        #prompt {
+            margin-right: 10px;
+            white-space: nowrap;
+            color: #00ffff; /* 提示符顏色 */
+        }
+
+        input {
+            background: transparent; /* 輸入框背景透明 */
+            color: #00ff00;
+            border: none;
+            outline: none;
+            width: calc(100% - 140px); /* 調整輸入框寬度 */
+            font-family: inherit;
+            font-size: 1em;
+            caret-color: #00ff00; /* 光標顏色 */
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal-container">
+        <div class="terminal-header">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+            <span class="terminal-title">Hacker Simulator / Terminal</span>
+        </div>
+
+        <div id="terminal-content">
+            <div id="title">歡迎來到終端機的世界</div>
+            <p class="welcome-msg" id="dynamicWelcomeMsg"></p>
+            <div id="terminal-output"></div>
+        </div>
+
+        <div id="input-line">
+            <span id="prompt">user@h4ck3r:~$</span>
+            <input id="commandInput" autofocus />
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById("commandInput");
+        const output = document.getElementById("terminal-output");
+        const prompt = document.getElementById("prompt");
+        const dynamicWelcomeMsg = document.getElementById("dynamicWelcomeMsg");
+        const terminalContent = document.getElementById("terminal-content"); // 獲取內容滾動區域
+
+        // 從 URL 獲取名字
+        const urlParams = new URLSearchParams(window.location.search);
+        const userName = urlParams.get('name') || 'Guest'; // 如果沒有名字，默認為 'Guest'
+
+        // 更新歡迎訊息和提示符
+        dynamicWelcomeMsg.innerHTML = `歡迎使用模擬終端機，<b style="color:#00ffff">${decodeURIComponent(userName)}</b>！ | 輸入 <b style="color:#00ffff">help</b> 查看指令列表`;
+        prompt.textContent = `${decodeURIComponent(userName)}@h4ck3r:~$`;
+
+        const files = {
+            "資安班.txt": "這是資安班的檔案內容。\n我們一起學駭客技術！\n加入我們的資安社群吧！",
+            "flag.txt": "FLAG{you_found_the_flag!}"
+        };
+
+        // 輔助函數：將文本追加到 output
+        function appendOutput(htmlContent) {
+            const div = document.createElement('div');
+            div.innerHTML = htmlContent;
+            // *** 關鍵修正：為這個新的 div 添加 white-space: pre-wrap; ***
+            div.style.whiteSpace = 'pre-wrap';
+            output.appendChild(div);
+        }
+
+
+        input.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                const command = input.value.trim();
+                appendOutput(`<span style="color:#00cc00;">${prompt.textContent}</span> <span style="color:#00ff00;">${command}</span>`); // 為輸入的指令添加顏色
+                handleCommand(command.toLowerCase());
+                input.value = "";
+                // 確保滾動到最底部
+                terminalContent.scrollTop = terminalContent.scrollHeight;
+            }
+        });
+
+        function handleCommand(cmd) {
+            if (cmd === "help") {
+                appendOutput(`
+<span style="color:#00ffff; font-weight: bold;">--- 指令列表 ---</span>
+<span style="color:#00cc00;">- help</span>  :  顯示指令說明
+<span style="color:#00cc00;">- ls</span>    : 列出所有目錄
+    <span style="color:#00dddd;">* 資安班.txt</span>
+    <span style="color:#ffcc00;">* ??? -> flag.txt</span>
+<span style="color:#00cc00;">- cd</span>    : 進入目錄 <span style="color:#999;">(範例: cd &lt;folder_name&gt;)</span>
+<span style="color:#00cc00;">- cat</span>   : 查看檔案內容 <span style="color:#999;">(範例: cat &lt;file_name&gt;)</span>
+<span style="color:#00cc00;">- scan</span>  : 模擬系統掃描
+<span style="color:#00cc00;">- clear</span> : 清除畫面
+<span style="color:#00cc00;">- exit</span>  : 離開模擬器
+<span style="color:#00ffff; font-weight: bold;">-----------------</span>`);
+            } else if (cmd === "ls") {
+                // 每個獨立的項目依然通過 appendOutput 獨立添加
+                appendOutput(`<span style="color:#00dddd;">資安班.txt</span>`);
+                appendOutput(`<span style="color:#ffcc00;">??? -> flag.txt</span>`);
+            } else if (cmd.startsWith("cat ")) {
+                const file = cmd.slice(4);
+                if (files[file]) {
+                    appendOutput(`<span style="color:#66ff66;">${files[file]}</span>`);
+                } else {
+                    appendOutput(`<span style="color:#ff6666;">錯誤: 找不到檔案：'${file}'</span>`);
+                }
+            } else if (cmd === "scan") {
+                appendOutput(`
+<span style="color:#00ffff;">[+] 啟動系統掃描...</span>
+<span style="color:#00cc00;">[SCAN] 掃描進度：25%</span>
+<span style="color:#00cc00;">[SCAN] 掃描進度：50%</span>
+<span style="color:#00cc00;">[SCAN] 掃描進度：75%</span>
+<span style="color:#00ff00;">[SUCCESS] 掃描完成。</span>
+<span style="color:#00dddd;">發現目標：10.0.0.1</span>
+<span style="color:#00dddd;">開放端口：</span>
+    <span style="color:#ffff00;">- SSH (22)</span>
+    <span style="color:#ffff00;">- HTTP (80)</span>
+    <span style="color:#ffff00;">- HTTPS (443)</span>
+    <span style="color:#ffff00;">- MySQL (3306)</span>`); /* 增加更多細節 */
+            } else if (cmd === "clear") {
+                output.innerHTML = ""; // 清空所有子元素
+            } else if (cmd === "exit") {
+                appendOutput(`<span style="color:#ff6666;">正在關閉模擬器... 再見！</span>`);
+                input.disabled = true;
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 3000); // 3 秒後跳轉
+            } else if (cmd.startsWith("cd ")) {
+                 const folder = cmd.slice(3);
+                 appendOutput(`<span style="color:#999;">進入目錄：'${folder}' (此為模擬操作，實際不改變路徑)</span>`);
+            }
+            else {
+                appendOutput(`<span style="color:#ff6666;">錯誤: 未知指令：'${cmd}'</span>`);
+                appendOutput(`<span style="color:#00ffff;">輸入 'help' 查看可用指令。</span>`);
+            }
+        }
+
+        // 確保加載完成後輸入框自動獲得焦點
+        document.addEventListener('DOMContentLoaded', () => {
+            input.focus();
+        });
+    </script>
+</body>
+</html>
