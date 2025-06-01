@@ -3,684 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>復興高中AI資安學程 - 科技資訊站</title>
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700&family=Roboto+Mono:wght@300;400;500;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <title>駭客世界</title>
     <style>
-        :root {
-            --bg-dark-primary: #020408; /* 更深的背景，接近漆黑 */
-            --bg-dark-secondary: #0a111f; /* 卡片背景，帶有深藍調 */
-            --accent-primary: #00e5ff; /* 主亮色 (更鮮明的青藍) */
-            --accent-secondary: #00b8d4; /* 次亮色，用於輔助和漸變 */
-            --hacker-green: #00ff00; /* 駭客綠 */
-            --hacker-purple: #8a2be2; /* 駭客紫 */
-            --text-primary: #e8effc; /* 主要文字顏色，更亮 */
-            --text-secondary: #a0b2c8; /* 次要文字顏色，更柔和 */
-            --border-glow-color: rgba(0, 229, 255, 0.4); /* 邊框/輝光顏色 */
-            --button-bg-start: var(--accent-secondary);
-            --button-bg-end: var(--accent-primary);
-            --shadow-color: rgba(0, 229, 255, 0.15);
-            --card-border-color: rgba(0, 229, 255, 0.2); /* 卡片邊框初始顏色 */
-            --futuristic-glow: 0 0 8px var(--accent-primary), 0 0 12px var(--accent-secondary), 0 0 16px var(--border-glow-color);
-            --hacker-glow: 0 0 5px var(--hacker-green), 0 0 10px var(--hacker-green), 0 0 15px rgba(0,255,0,0.5);
-            --glitch-color-1: #ff00ff; /* Magenta */
-            --glitch-color-2: #00ffff; /* Cyan */
-        }
-
-        /* Glitch effect for text */
-        .glitch-text {
-            position: relative;
-            animation: glitch 1s infinite linear alternate-reverse;
-            text-shadow: var(--hacker-glow);
-        }
-
-        .glitch-text::before,
-        .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .glitch-text::before {
-            left: 2px;
-            text-shadow: -2px 0 var(--glitch-color-1);
-            animation: glitch-left 1.5s infinite linear reverse;
-        }
-
-        .glitch-text::after {
-            left: -2px;
-            text-shadow: -2px 0 var(--glitch-color-2);
-            animation: glitch-right 1.2s infinite linear reverse;
-        }
-
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-
-        @keyframes glitch-left {
-            0% { clip-path: inset(0 0 0 0); }
-            20% { clip-path: inset(0 100px 0 0); }
-            40% { clip-path: inset(0 0 0 100px); }
-            60% { clip-path: inset(0 0 50px 0); }
-            80% { clip-path: inset(50px 0 0 0); }
-            100% { clip-path: inset(0 0 0 0); }
-        }
-
-        @keyframes glitch-right {
-            0% { clip-path: inset(0 0 0 0); }
-            20% { clip-path: inset(0 0 50px 0); }
-            40% { clip-path: inset(0 50px 0 0); }
-            60% { clip-path: inset(50px 0 0 0); }
-            80% { clip-path: inset(0 0 0 50px); }
-            100% { clip-path: inset(0 0 0 0); }
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
         body {
-            font-family: 'Roboto Mono', monospace; /* 更具駭客感的字體 */
-            background: linear-gradient(135deg, var(--bg-dark-primary) 0%, #040810 100%); /* 背景漸變 */
-            color: var(--text-primary);
-            line-height: 1.7;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            min-height: 100vh;
-            position: relative;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: black;
         }
 
-        /* Matrix Rain Background Effect */
-        body::before {
-            content: '';
-            position: fixed;
+        #welcome-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: black;
+            position: relative;
+            z-index: 1; /* 確保內容在矩陣動畫之上 */
+        }
+
+        .matrix-bg {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10" fill="transparent"/><circle cx="5" cy="5" r="1" fill="rgba(0,255,0,0.05)"/></svg>') repeat;
-            opacity: 0.1;
-            z-index: -1;
-            animation: matrixRain 30s linear infinite;
+            pointer-events: none; /* 讓鼠標事件穿透到下層 */
+            z-index: 0; /* 確保矩陣動畫在最下層 */
         }
 
-        @keyframes matrixRain {
-            from { background-position: 0 0; }
-            to { background-position: 0 1000px; }
-        }
-        
-        /* 自訂捲軸樣式 (Webkit) */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-dark-secondary);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--hacker-green); /* 駭客綠捲軸 */
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-primary);
+        .matrix-bg canvas {
+            display: block;
         }
 
-
-        .infographic-container {
-            width: 100%;
-            max-width: 1920px; /* 為超寬螢幕優化 */
-            margin: 0 auto;
-            padding: 10px; /* 容器本身的內邊距減少，由子元素控制 */
-        }
-
-        .infographic-header {
-            text-align: center;
-            margin-bottom: 50px;
-            padding: 40px 20px; /* 增加上下邊距 */
-            border-bottom: 1px solid var(--card-border-color);
-            position: relative;
-            animation: fadeInDown 1s ease-out;
-        }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .infographic-header::after {
-            content: '';
-            position: absolute;
-            bottom: -1px; /* 覆蓋在 border-bottom 上 */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 2px; /* 更細緻的線條 */
-            background: linear-gradient(90deg, transparent, var(--hacker-green) 50%, transparent); /* 駭客綠線條 */
-            box-shadow: 0 0 8px var(--hacker-green), 0 0 12px var(--hacker-green), 0 0 16px rgba(0,255,0,0.5); /* 駭客綠光暈 */
-            animation: pulseHeaderLine 3s infinite ease-in-out;
-        }
-        @keyframes pulseHeaderLine {
-            0% { width: 50%; opacity: 0.7; }
-            50% { width: 70%; opacity: 1; }
-            100% { width: 50%; opacity: 0.7; }
-        }
-
-
-        .infographic-header .main-title-icon {
-            font-size: 4em; /* 稍微加大 */
-            color: var(--hacker-green); /* 駭客綠圖示 */
-            margin-bottom: 20px;
-            display: inline-block;
-            animation: iconPulseAndRotate 10s linear infinite, glowPulse 2s infinite alternate; /* 增加光暈動畫 */
-            text-shadow: var(--hacker-glow);
-        }
-        @keyframes iconPulseAndRotate {
-            0% { transform: rotate(0deg) scale(1); }
-            25% { transform: rotate(90deg) scale(1.05); }
-            50% { transform: rotate(180deg) scale(1); }
-            75% { transform: rotate(270deg) scale(1.05); }
-            100% { transform: rotate(360deg) scale(1); }
-        }
-        @keyframes glowPulse {
-            0% { text-shadow: var(--hacker-glow); }
-            100% { text-shadow: 0 0 10px var(--hacker-green), 0 0 20px var(--accent-primary), 0 0 30px rgba(0,255,0,0.7); }
-        }
-
-
-        .infographic-header h1 {
-            font-family: 'Orbitron', sans-serif; /* 更有科技感的字體 */
-            font-size: 3.2em; /* 標題加大 */
-            color: var(--hacker-green); /* 駭客綠標題 */
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 5px; /* 增加字距 */
-            margin-bottom: 15px;
-            text-shadow: 0 0 15px var(--hacker-green), 0 0 25px var(--accent-primary); /* 增強文字光暈 */
-            animation: textGlow 2s infinite alternate; /* 新增文字光暈動畫 */
-        }
-        @keyframes textGlow {
-            0% { text-shadow: 0 0 10px var(--hacker-green), 0 0 20px rgba(0,255,0,0.5); }
-            100% { text-shadow: 0 0 15px var(--accent-primary), 0 0 25px var(--accent-secondary); }
-        }
-
-
-        .infographic-header .subtitle {
-            font-family: 'Exo 2', sans-serif;
-            font-size: 1.4em;
-            color: var(--text-secondary);
-            margin-bottom: 25px;
-            font-weight: 300; /* 字重調細 */
-            letter-spacing: 2px; /* 增加字距 */
-            animation: fadeIn 1s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .infographic-header .date {
-            font-size: 1em;
-            color: var(--text-secondary);
-            opacity: 0.7;
-            font-family: 'Roboto Mono', monospace;
-        }
-
-        .registration-cta {
-            text-align: center;
-            margin-bottom: 60px; /* 增加與下方內容的間距 */
-            animation: fadeInUp 1s 0.5s ease-out forwards; /* 延遲出現 */
-            opacity: 0; /* 初始隱藏 */
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-
-        .registration-button {
-            font-family: 'Exo 2', sans-serif;
-            font-size: 1.3em; /* 按鈕加大 */
-            font-weight: 600;
-            color: var(--bg-dark-primary);
-            background: linear-gradient(45deg, var(--hacker-green), var(--accent-primary)); /* 駭客綠漸變 */
-            padding: 18px 40px; /* 增加內邊距 */
-            border: 2px solid transparent; /* 為懸停效果準備 */
-            border-radius: 8px; /* 更有科技感的邊角 */
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            transition: all 0.3s ease; /* 過渡所有屬性 */
-            display: inline-block;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3), 0 0 25px rgba(0, 255, 0, 0.2); /* 駭客綠陰影 */
-            position: relative;
-            overflow: hidden;
-        }
-         .registration-button::before { /* 掃光效果 */
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s ease-in-out;
-        }
-        .registration-button:hover::before {
-            left: 150%;
-        }
-        .registration-button:hover, .registration-button:focus {
-            transform: translateY(-5px) scale(1.03); /* 懸停效果增強 */
-            box-shadow: 0 0 25px rgba(0, 255, 0, 0.5), 0 0 40px rgba(0, 255, 0, 0.3); /* 駭客綠懸停陰影 */
-            color: #000;
-            border-color: var(--hacker-green); /* 懸停時顯示邊框 */
-        }
-        .registration-button i {
-            margin-right: 12px;
-            transition: transform 0.3s ease;
-        }
-        .registration-button:hover i {
-            transform: rotate(5deg) scale(1.1);
-        }
-
-
-        .grid-layout {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); /* 卡片最小寬度增加 */
-            gap: 35px; /* 間距加大 */
-        }
-
-        .section-card {
-            background: radial-gradient(circle at top left, rgba(10, 17, 31, 0.8), var(--bg-dark-secondary) 70%); /* 卡片背景漸變 */
-            border: 1px solid var(--card-border-color);
-            border-radius: 16px; /* 圓角調整 */
-            padding: 30px; /* 內邊距增加 */
-            box-shadow: 0 5px 25px var(--shadow-color), inset 0 0 15px rgba(0, 229, 255, 0.08);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease; /* 使用貝茲曲線 */
-            position: relative;
-            overflow: hidden;
-            opacity: 0; /* For scroll animation */
-            transform: translateY(20px); /* For scroll animation */
-        }
-        
-        /* Scroll-triggered animation for cards */
-        .section-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-
-        .section-card::before { 
-            content: "";
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(0,255,0,0.1) 0%, transparent 30%); /* 駭客綠光暈 */
-            transform: scale(0);
-            transition: transform 0.5s ease-out;
-            z-index: 0;
-            pointer-events: none;
-        }
-        .section-card:hover::before {
-            transform: scale(1);
-        }
-         .section-card::after { /* 邊角裝飾線 */
-            content: "";
-            position: absolute;
-            width: 20px; height: 20px;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        .section-card:hover::after { opacity: 1; }
-        .section-card::after { /* Top-left corner */
-            top: 10px; left: 10px;
-            border-top: 2px solid var(--hacker-green); /* 駭客綠邊框 */
-            border-left: 2px solid var(--hacker-green); /* 駭客綠邊框 */
-        }
-        /* Can add more ::after for other corners if desired with different pseudo-elements or a more complex SVG border */
-
-
-        .section-card:hover {
-            transform: translateY(-12px) scale(1.02); /* 懸停效果更明顯 */
-            box-shadow: 0 0 45px rgba(0,255,0,0.4), inset 0 0 20px rgba(0, 255, 0, 0.15); /* 駭客綠陰影 */
-            border-color: var(--hacker-green); /* 懸停時邊框更亮 */
-        }
-
-        .section-card .card-main-icon {
-            font-size: 3em; /* 圖示加大 */
-            color: var(--hacker-green); /* 駭客綠圖示 */
-            margin-bottom: 25px;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), text-shadow 0.4s ease;
-            text-shadow: var(--hacker-glow);
-            z-index: 1; /* Ensure icon is above ::before pseudo-element */
-        }
-        .section-card:hover .card-main-icon {
-            transform: scale(1.15) rotate(8deg) translateY(-5px); /* 懸停圖示動畫 */
-            text-shadow: 0 0 12px var(--hacker-green), 0 0 20px var(--accent-primary), 0 0 30px rgba(0,255,0,0.7); /* 駭客綠光暈 */
-        }
-        
-        .section-card h2 {
-            font-family: 'Exo 2', sans-serif;
-            font-size: 1.8em; /* 卡片標題加大 */
-            color: var(--text-primary);
-            margin-bottom: 20px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-shadow: 0 0 8px var(--hacker-green); /* 駭客綠標題光暈 */
+        #welcome-screen h1 {
+            color: #00ff00;
+            font-family: 'Press Start 2P', cursive; /* 類似駭客風格的字體 */
+            font-size: 3em;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 0 0 20px rgba(0, 255, 0, 0.6); /* 調整文字陰影 */
+            margin-bottom: 30px;
             z-index: 1;
-        }
-        .section-card h2 .title-icon {
-            font-size: 1.1em;
-            margin-right: 12px;
-            color: var(--accent-secondary);
-            transition: transform 0.3s ease;
-        }
-        .section-card:hover h2 .title-icon {
-            transform: rotate(-10deg) scale(1.2);
+            position: relative;
         }
 
-
-        .card-content {
-            width: 100%;
-            font-size: 1em; /* 內容文字大小調整 */
-            z-index: 1;
-        }
-
-        .info-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            text-align: left;
-        }
-
-        .info-list li {
-            color: var(--text-secondary);
-            margin-bottom: 15px; /* 列表項間距加大 */
-            display: flex;
-            align-items: center;
-            padding: 8px 5px; /* 列表項內邊距 */
-            border-bottom: 1px solid rgba(0, 229, 255, 0.15);
-            transition: background-color 0.3s ease, border-color 0.3s ease;
-        }
-        .info-list li:hover {
-            background-color: rgba(0, 255, 0, 0.05); /* 駭客綠背景 */
-            border-color: rgba(0, 255, 0, 0.3); /* 駭客綠邊框 */
-        }
-        .info-list li:last-child {
-            border-bottom: none;
-        }
-
-        .info-list li .item-icon {
-            font-size: 1.2em; /* 列表圖示加大 */
-            color: var(--accent-secondary);
-            margin-right: 15px; /* 圖示與文字間距加大 */
-            min-width: 22px;
-            text-align: center;
-            transition: transform 0.3s ease, color 0.3s ease;
-        }
-         .info-list li:hover .item-icon {
-            transform: scale(1.2) rotate(10deg);
-            color: var(--hacker-green); /* 駭客綠圖示 */
-        }
-        
-        .keyword {
-            color: var(--hacker-green); /* 駭客綠關鍵字 */
-            font-weight: 500; /* 字重調整 */
-            background-color: rgba(0, 255, 0, 0.1); /* 駭客綠背景色調整 */
-            padding: 3px 8px; /* 內邊距調整 */
+        #welcome-screen input[type="text"] {
+            background: rgba(0, 255, 0, 0.08); /* 更透明 */
+            border: 2px solid #00cc00; /* 稍微暗一點的邊框 */
+            padding: 10px 20px;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
             border-radius: 5px;
-            border: 1px solid rgba(0, 255, 0, 0.25); /* 駭客綠邊框 */
-            transition: all 0.3s ease;
-            display: inline-block;
-            font-family: 'Roboto Mono', monospace; /* 關鍵字使用駭客字體 */
-        }
-        .keyword:hover {
-            background-color: rgba(0, 255, 0, 0.2);
-            border-color: var(--hacker-green);
-            transform: translateY(-1px);
-            text-shadow: 0 0 5px var(--hacker-green);
-        }
-        
-        .program-info-panel {
-            grid-column: span 2; 
-            padding: 35px; /* 內邊距加大 */
-            text-align: left;
-        }
-        .program-info-panel p {
-            margin-bottom: 18px; /* 段落間距加大 */
-            color: var(--text-secondary);
-            line-height: 1.8;
-            font-size: 1.05em; /* 文字稍大 */
-        }
-        .program-info-panel .highlight {
-            color: var(--hacker-green); /* 駭客綠強調色 */
-            font-weight: 600;
-            text-shadow: 0 0 3px var(--hacker-green);
-            font-family: 'Roboto Mono', monospace; /* 強調文字使用駭客字體 */
-        }
-         .program-info-panel .program-icon {
-            font-size: 1.3em; /* 圖示加大 */
-            margin-right: 8px;
-            color: var(--hacker-green); /* 駭客綠圖示 */
-            vertical-align: middle; /* 垂直對齊 */
-        }
-
-        .activities-list-card {
-            grid-column: 1 / -1; 
-        }
-        .activities-list-card .info-list {
-            columns: 2; 
-            gap: 30px; /* 欄間距加大 */
-        }
-        .activities-list-card .info-list li {
-            border-color: rgba(0, 255, 0, 0.1); /* 駭客綠列表分隔線 */
-        }
-
-
-        .infographic-footer {
+            outline: none;
+            margin-bottom: 20px;
+            width: 300px;
             text-align: center;
-            margin-top: 70px; /* 底部間距加大 */
-            padding: 30px 0; /* 上下內邊距加大 */
-            font-size: 0.95em; /* 文字稍大 */
-            color: var(--text-secondary);
-            border-top: 1px solid var(--card-border-color);
-            opacity: 0.8;
-            width: 100%; /* 確保頁腳寬度 */
-            animation: fadeInUp 1s 1s ease-out forwards; /* 延遲出現 */
-            opacity: 0; /* 初始隱藏 */
-        }
-        .infographic-footer i {
-            color: var(--hacker-green); /* 駭客綠圖示 */
-            margin: 0 5px;
+            z-index: 1;
+            position: relative;
+            box-shadow: 0 0 8px rgba(0, 255, 0, 0.5); /* 新增陰影 */
         }
 
-        /* Responsive Adjustments - 保持原有斷點，但內部元素大小已調整 */
-        @media (max-width: 1400px) { /* 針對較小桌面優化 */
-             .grid-layout {
-                grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            }
-            .program-info-panel { grid-column: span 2; } /* 在此斷點仍嘗試保持兩欄 */
-             .activities-list-card .info-list { columns: 2; }
-        }
-        @media (max-width: 1200px) { 
-            .program-info-panel { grid-column: span 1; } 
-        }
-
-        @media (max-width: 992px) { 
-            .infographic-header h1 { font-size: 2.5em; }
-            .infographic-header .subtitle { font-size: 1.2em; }
-            .registration-button { font-size: 1.1em; padding: 15px 30px; }
-            .grid-layout {
-                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-                gap: 30px;
-            }
-            .activities-list-card .info-list { columns: 1; }
+        #welcome-screen button {
+            background: #00cc00; /* 稍微暗一點的綠色 */
+            color: black;
+            border: none;
+            padding: 10px 30px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+            z-index: 1;
+            position: relative;
+            box-shadow: 0 0 8px rgba(0, 255, 0, 0.5); /* 新增陰影 */
         }
 
-        @media (max-width: 768px) { 
-            body { padding: 10px; }
-            .infographic-header h1 { font-size: 2em; }
-            .infographic-header .subtitle { font-size: 1.1em; }
-            .grid-layout {
-                grid-template-columns: 1fr;
-                gap: 25px;
-            }
-            .section-card { padding: 25px; }
-            .section-card h2 { font-size: 1.5em; }
-            .card-content { font-size: 0.95em; }
-        }
-         @media (max-width: 480px) { /* 針對更小手機螢幕 */
-            .infographic-header h1 { font-size: 1.8em; letter-spacing: 2px;}
-            .infographic-header .subtitle { font-size: 1em; }
-            .registration-button { font-size: 1em; padding: 12px 25px; }
-            .section-card .card-main-icon { font-size: 2.5em; }
-            .section-card h2 { font-size: 1.3em; }
-            .info-list li { font-size: 0.9em; }
-            .keyword { padding: 2px 5px; font-size: 0.85em; }
+        #welcome-screen button:hover {
+            background: #009900; /* 懸停時更暗 */
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.8); /* 懸停時陰影更明顯 */
         }
 
+        #welcome-screen .cyber-text {
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            margin-top: 40px;
+            text-align: center;
+            z-index: 1;
+            position: relative;
+        }
+
+        #welcome-screen .cyber-text a {
+            color: #00ffff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        #welcome-screen .cyber-text a:hover {
+            color: #00dddd;
+        }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="infographic-container">
-        <header class="infographic-header">
-            <i class="fas fa-terminal main-title-icon"></i> <h1 class="glitch-text" data-text="復興高中AI資安學程">復興高中AI資安學程</h1> <p class="subtitle">數位世界守門人・智慧安全新紀元</p> <p class="date">資訊更新日期: <span id="creationDate"></span></p>
-        </header>
 
-        <div class="registration-cta">
-            <a href="https://www.fhsh.tp.edu.tw/" target="_blank" class="registration-button">
-                <i class="fas fa-fingerprint"></i> 啟動・資料存取中
-            </a>
+    <div id="welcome-screen">
+        <div class="matrix-bg">
+            <canvas id="matrixCanvas"></canvas>
         </div>
-
-        <main class="grid-layout">
-            <div class="section-card" data-index="0">
-                <i class="fas fa-chalkboard-teacher card-main-icon"></i>
-                <h2><i class="fas fa-user-secret title-icon"></i>頂尖師資陣容</h2> <div class="card-content">
-                    <ul class="info-list">
-                        <li><i class="fas fa-user-tie item-icon"></i>陳晉</li>
-                        <li><i class="fas fa-user-tie item-icon"></i>賴仕鈞</li>
-                        <li><i class="fas fa-user-tie item-icon"></i>詹博文</li>
-                        <li><i class="fas fa-user-tie item-icon"></i>杜欣欣</li>
-                        <li><i class="fas fa-user-tie item-icon"></i>陳瓏元</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="section-card" data-index="1">
-                <i class="fas fa-users-line card-main-icon"></i> <h2><i class="fas fa-user-ninja title-icon"></i>學員菁英薈萃</h2>
-                <div class="card-content">
-                    <ul class="info-list">
-                        <li><i class="fas fa-user-secret item-icon"></i>10231鄭宇佑</li>
-                        <li><i class="fas fa-user-secret item-icon"></i>10321張雅博</li>
-                        <li><i class="fas fa-user-secret item-icon"></i>10511蔡亦淇</li>
-                        <li><i class="fas fa-user-secret item-icon"></i>10531黎育承</li>
-                        <li><i class="fas fa-user-secret item-icon"></i>10617余信恩</li>
-                        <li><i class="fas fa-user-secret item-icon"></i>10618吳耀林</li>
-                        <li><i class="fas fa-user-secret item-icon"></i>10623林致佑</li>
-                        <li><i class="fas fa-user-secret item-icon"></i>10707林茉莉</li>
-                        <li><i class="fas fa-user-secret item-icon"></i>10730葉品驛</li>
-                        <li><i class="fas fa-user-secret item-icon"></i>10909陳宥穎</li>
-                        <li><i class="fas fa-user-secret item-icon"></i>10924陳兆閩</li>
-                        <li><i class="fas fa-user-secret item-icon"></i>11523郭鈞瑋</li>
-                        <li><i class="fas fa-user-secret item-icon"></i>11602江以琳</li>
-                        <li><i class="fas fa-user-secret item-icon"></i>11615鍾雨岑</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="section-card" data-index="2">
-                <i class="fas fa-shield-virus card-main-icon"></i> <h2><i class="fas fa-network-wired title-icon"></i>前沿核心課程</h2> <div class="card-content">
-                    <ul class="info-list">
-                        <li><i class="fas fa-code item-icon"></i>Python <span class="keyword">程式語言</span></li>
-                        <li><i class="fab fa-linux item-icon"></i>Linux <span class="keyword">作業系統</span></li>
-                        <li><i class="fas fa-lock item-icon"></i>資安基礎概論</li> <li><i class="fas fa-server item-icon"></i>計算機概論</li> <li><i class="fas fa-book-skull item-icon"></i>專業科技英文</li> <li><i class="fas fa-calculator item-icon"></i>進階應用數學</li> </ul>
-                </div>
-            </div>
-            
-            <div class="section-card program-info-panel" data-index="3">
-                <i class="fas fa-fingerprint card-main-icon" style="font-size: 2.8em;"></i> <h2><i class="fas fa-mask title-icon"></i>學程獨特亮點</h2> <div class="card-content">
-                    <p>
-                        <i class="fas fa-terminal program-icon"></i>AI資安學程是一個<span class="highlight">尖端分散式學習</span>資安的專班，我們常舉辦多元的<span class="highlight">高強度活動</span>及<span class="highlight">指標性競賽</span>。
-                    </p>
-                    <p>
-                        <i class="fas fa-user-shield program-icon"></i>在資安班您將結識眾多風趣且專注的<span class="highlight">戰友(夥伴)</span>。這裡不僅是校園中的<span class="highlight">安全研習港灣</span>，更是驅動您不斷精進的<span class="highlight">核心動力</span>與<span class="highlight">明確目標</span>。
-                    </p>
-                    <p>
-                        <i class="fas fa-hand-fist program-icon"></i>我們營造一個具備共同目標與愛好的環境，鼓勵學員們<span class="highlight">協同學習</span>、<span class="highlight">極速成長</span>，共同邁向卓越。
-                    </p>
-                </div>
-            </div>
-            
-            <div class="section-card activities-list-card" data-index="4">
-                <i class="fas fa-calendar-check card-main-icon"></i> <h2><i class="fas fa-trophy title-icon"></i>近期活動與輝煌成就</h2> <div class="card-content">
-                    <ul class="info-list">
-                        <li><i class="fas fa-robot item-icon"></i>凱比<span class="keyword">智能機器人</span>課程</li>
-                        <li><i class="fas fa-earth-americas item-icon"></i>國際資安交流 (<span class="keyword">美國</span>、<span class="keyword">日本</span>、<span class="keyword">捷克</span>)</li>
-                        <li><i class="fas fa-flag-checkered item-icon"></i>CTF<span class="keyword">奪旗賽</span>種子培訓工作坊</li>
-                        <li><i class="fas fa-display item-icon"></i>113年高級中等學校-科技輔助自主學習推動計畫-期末成果展演</li>
-                        <li><i class="fas fa-handshake-angle item-icon"></i>北部六校高中資訊社團<span class="keyword">聯合技術交流</span>活動</li>
-                        <li><i class="fas fa-lightbulb item-icon"></i>台灣教育科技展 <span class="keyword">EdTech Taiwan</span></li>
-                        <li><i class="fas fa-laptop-code item-icon"></i>SITCON <span class="keyword">學生計算機年會</span></li>
-                        <li><i class="fas fa-cookie-bite item-icon"></i>zero cookie 零日餅乾社 <span class="keyword">資安社群</span></li>
-                        <li><i class="fas fa-building-shield item-icon"></i>國防大學管理學院<span class="keyword">國防資安</span>參訪</li>
-                        <li><i class="fas fa-graduation-cap item-icon"></i>高中職升學博覽會</li>
-                        <li><i class="fas fa-microchip-ai item-icon"></i>2025台灣資安大會 <span class="keyword">CyberSec Taiwan</span></li>
-                        <li><i class="fas fa-chess item-icon"></i>國防大學管理學院-2024年火線交鋒赤色巨龍-線上兵棋聯誼邀請賽</li>
-                        <li><i class="fas fa-city item-icon"></i>臺北市智慧城市<span class="keyword">Smart City</span>青年舉政徵件提案競賽</li>
-                        <li><i class="fas fa-gamepad item-icon"></i>CGGC <span class="keyword">校園電競賽事</span></li>
-                        <li><i class="fas fa-award item-icon"></i>凱比<span class="keyword">機器人程式設計</span>比賽</li>
-                    </ul>
-                </div>
-            </div>
-        </main>
-
-        <footer class="infographic-footer">
-            <p><i class="fas fa-key"></i> 資料加密來源：AI資安學程官方</p>
-            <p>&copy; <span id="currentYear"></span> 復興高中AI資安學程版權所有. 系統建構 <i class="fas fa-code"></i> <i class="fas fa-bug" style="color: var(--hacker-green);"></i></p> </footer>
+        <h1>Who are you?</h1>
+        <input type="text" id="nameInput" placeholder="Type your name">
+        <button id="enterButton">Enter</button>
+        <p class="cyber-text">interesting about cyber security? <a href="#">join us!</a></p>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const currentDate = new Date();
-            document.getElementById('creationDate').textContent = currentDate.toLocaleDateString('zh-Hant', { year: 'numeric', month: 'long', day: 'numeric' });
-            document.getElementById('currentYear').textContent = currentDate.getFullYear();
+        const nameInput = document.getElementById('nameInput');
+        const enterButton = document.getElementById('enterButton');
+        const matrixCanvas = document.getElementById('matrixCanvas');
+        const ctx = matrixCanvas.getContext('2d');
 
-            // Scroll-triggered animation for cards
-            const cards = document.querySelectorAll('.section-card');
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach((entry, index) => {
-                    if (entry.isIntersecting) {
-                        // Add a staggered delay based on the card's data-index or actual index
-                        const delay = (entry.target.dataset.index || index) * 100; // 100ms delay per card
-                        setTimeout(() => {
-                            entry.target.classList.add('visible');
-                        }, delay);
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 }); // Trigger when 10% of the card is visible
+        matrixCanvas.width = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
 
-            cards.forEach(card => {
-                observer.observe(card);
-            });
+        const characters = '01';
+        const fontSize = 16;
+        const columns = matrixCanvas.width / fontSize;
+
+        const drops = [];
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function drawMatrix() {
+            // 更低的透明度，讓背景更暗更透明
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.03)'; // 調整為 0.03，更透明
+            ctx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+            // 繪製 0 和 1 的顏色也稍微調暗
+            ctx.fillStyle = 'rgba(0, 255, 0, 0.6)'; // 調整為 0.6，更暗更透明
+            ctx.font = `${fontSize}px monospace`;
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.98) { // 稍微降低重置頻率
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        let matrixInterval = setInterval(drawMatrix, 50); // 稍微慢一點的動畫 (20 FPS)，減少顯眼度
+
+        window.addEventListener('resize', () => {
+            matrixCanvas.width = window.innerWidth;
+            matrixCanvas.height = window.innerHeight;
+            const newColumns = matrixCanvas.width / fontSize;
+            drops.length = newColumns;
+            for (let i = 0; i < newColumns; i++) {
+                if (drops[i] === undefined) {
+                    drops[i] = 1;
+                }
+            }
+        });
+
+        enterButton.addEventListener('click', () => {
+            const userName = encodeURIComponent(nameInput.value.trim());
+            if (userName) {
+                clearInterval(matrixInterval);
+                window.location.href = `terminal.html?name=${userName}`;
+            } else {
+                alert('請輸入您的名字！');
+            }
+        });
+
+        nameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                enterButton.click();
+            }
         });
     </script>
 </body>
